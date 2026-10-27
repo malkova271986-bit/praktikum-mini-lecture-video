@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Цифровизация в образовании — мини-лекция</title>
+<style>
+:root{
+  --bg0:#0d0a24; --bg1:#1a1446; --violet:#8b5cf6; --violet2:#a78bfa; --lilac:#c4b5fd;
+  --cyan:#5eead4; --cyan2:#67e8f9; --pink:#f472b6; --green:#4ade80; --ink:#f5f3ff; --mute:#b9b3d9;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:var(--bg0)}
+body{font-family:'Inter',sans-serif;color:var(--ink);position:relative}
+#stage{position:absolute;inset:0;overflow:hidden;
+  background:radial-gradient(1200px 900px at 78% 55%, #2a1f6b 0%, rgba(42,31,107,0) 60%),
+             radial-gradient(900px 700px at 15% 20%, #1d1650 0%, rgba(29,22,80,0) 70%),
+             linear-gradient(160deg,#120d33 0%,#0b0820 100%);}
+.abs{position:absolute}
+#dots{position:absolute;inset:-40px;opacity:.35;
+  background-image:radial-gradient(circle,rgba(167,139,250,.35) 1.4px,transparent 1.6px);background-size:36px 36px;}
+.glow{position:absolute;border-radius:50%;filter:blur(80px);opacity:.45}
+/* top progress */
+#prog{left:100px;right:100px;top:44px;height:4px;border-radius:2px;background:rgba(196,181,253,.15)}
+#progfill{position:absolute;left:0;top:0;bottom:0;border-radius:2px;background:linear-gradient(90deg,var(--violet),var(--cyan));transform-origin:0 0}
+.tick{position:absolute;top:-4px;width:12px;height:12px;border-radius:3px;background:#2a2160;border:2px solid #4c3d9e;margin-left:-6px}
+.tick.on{background:var(--cyan);border-color:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+/* header */
+.chip{display:inline-flex;align-items:center;gap:12px;font-family:'DejaVu Sans Mono',monospace;font-size:22px;letter-spacing:3px;
+  color:var(--cyan);padding:9px 18px;border:2px solid rgba(94,234,212,.5);border-radius:10px;background:rgba(94,234,212,.07);text-transform:uppercase}
+.chip i{width:10px;height:10px;background:var(--green);border-radius:2px;box-shadow:0 0 10px var(--green)}
+.h1{font-family:'Inter Display','Inter';font-weight:800;font-size:66px;line-height:1.05;letter-spacing:-1px}
+.h1 em{font-style:normal;background:linear-gradient(90deg,var(--lilac),var(--cyan2));-webkit-background-clip:text;color:transparent}
+.scene{position:absolute;left:0;top:0;width:1920px;height:1080px}
+.head{position:absolute;left:100px;top:96px}
+.head .h1{margin-top:22px;font-size:60px;max-width:1170px}
+.body{position:absolute;left:100px;top:300px;width:1180px;height:540px}
+/* cards */
+.card{position:absolute;border-radius:22px;background:linear-gradient(160deg,rgba(139,92,246,.20),rgba(30,22,80,.55));
+  border:1.5px solid rgba(167,139,250,.35);box-shadow:0 20px 50px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.08);padding:28px 30px}
+.card h3{font-family:'Inter Display';font-weight:700;font-size:34px;line-height:1.12;margin-bottom:12px}
+.card p{font-size:25px;line-height:1.38;color:var(--mute)}
+.num{font-family:'DejaVu Sans Mono';font-size:22px;color:var(--cyan);letter-spacing:2px;margin-bottom:14px;display:block}
+.ico{width:64px;height:64px;margin-bottom:16px}
+.ico *{fill:none;stroke:var(--cyan2);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.lbl{font-size:26px;color:var(--mute);line-height:1.35}
+/* subtitles */
+#sub{position:absolute;left:100px;top:880px;width:1180px;height:150px;display:flex;align-items:center}
+#subbox{position:relative;width:100%;padding:22px 30px 22px 34px;border-radius:18px;background:rgba(10,7,30,.72);border:1px solid rgba(167,139,250,.25)}
+#subbox:before{content:"";position:absolute;left:0;top:18px;bottom:18px;width:5px;border-radius:3px;background:linear-gradient(var(--violet2),var(--cyan))}
+#subtext{font-size:31px;line-height:1.36;font-weight:500;color:#fff}
+/* hero */
+#hero{position:absolute;left:1330px;top:0;width:560px;height:1080px}
+#hero img{position:absolute}
+.bubble{position:absolute;left:1300px;top:92px;width:400px;padding:22px 26px;border-radius:24px 24px 6px 24px;background:#f5f3ff;color:#1b1446;
+  font-family:'Inter Display';font-weight:700;font-size:28px;line-height:1.22;box-shadow:0 16px 40px rgba(0,0,0,.4), 0 0 0 3px rgba(167,139,250,.6)}
+.bubble:after{content:"";position:absolute;right:-14px;bottom:0;border-left:22px solid #f5f3ff;border-top:22px solid transparent}
+.bubble .cur{display:inline-block;width:3px;height:30px;background:var(--violet);margin-left:3px;vertical-align:-4px}
+/* holo window */
+.win{position:absolute;border-radius:26px;overflow:hidden;border:2px solid rgba(167,139,250,.7);
+  box-shadow:0 0 0 8px rgba(139,92,246,.12),0 0 80px rgba(139,92,246,.45),0 30px 60px rgba(0,0,0,.5);background:#777}
+.win .bar{position:absolute;left:0;right:0;top:0;height:46px;background:rgba(18,13,51,.85);display:flex;align-items:center;gap:10px;padding-left:20px;z-index:2}
+.win .bar b{width:13px;height:13px;border-radius:50%;display:block}
+.win .bar span{margin-left:14px;font-family:'DejaVu Sans Mono';font-size:17px;color:var(--lilac);letter-spacing:2px}
+.win img{position:absolute;left:0;top:46px;width:100%}
+.pill{display:inline-block;padding:10px 20px;border-radius:999px;font-size:24px;font-weight:600;border:1.5px solid rgba(94,234,212,.5);color:var(--cyan);background:rgba(94,234,212,.08);margin:0 10px 12px 0}
+svg text{font-family:'Inter'}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="dots"></div>
+  <div class="glow" id="g1" style="width:620px;height:620px;background:#7c3aed;left:1250px;top:300px"></div>
+  <div class="glow" id="g2" style="width:420px;height:420px;background:#0e7490;left:-80px;top:620px;opacity:.3"></div>
+  <div class="abs" id="prog"><div id="progfill"></div></div>
+  <div id="scenes"></div>
+  <div id="hero">
+    <img id="heroFront" src="../../assets/hero/front_0.png">
+    <img id="heroSide" src="../../assets/hero/side_0.png">
+    <img id="robA" src="../../assets/hero/front_1.png">
+    <img id="robB" src="../../assets/hero/front_2.png">
+  </div>
+  <div class="bubble" id="bubble"><span id="btext"></span><span class="cur" id="bcur"></span></div>
+  <div id="sub"><div id="subbox"><div id="subtext"></div></div></div>
+</div>
+
+<script>
+// ---------------- content ----------------
+const ICON = {
+  book:'<path d="M8 12h20a6 6 0 0 1 6 6v36a5 5 0 0 0-5-5H8z"/><path d="M58 12H38a6 6 0 0 0-6 6v36a5 5 0 0 1 5-5h21z"/>',
+  gear:'<circle cx="32" cy="32" r="9"/><path d="M32 6v8M32 50v8M6 32h8M50 32h8M13.6 13.6l5.7 5.7M44.7 44.7l5.7 5.7M13.6 50.4l5.7-5.7M44.7 19.3l5.7-5.7"/>',
+  bolt:'<path d="M36 6 14 36h16l-4 22 24-32H34z"/>',
+  pc:'<rect x="8" y="10" width="48" height="32" rx="4"/><path d="M24 54h16M32 42v12"/>',
+  ai:'<rect x="16" y="16" width="32" height="32" rx="6"/><path d="M26 6v10M38 6v10M26 48v10M38 48v10M6 26h10M6 38h10M48 26h10M48 38h10"/><path d="M26 38l6-14 6 14M28 34h8"/>',
+  target:'<circle cx="32" cy="32" r="24"/><circle cx="32" cy="32" r="14"/><circle cx="32" cy="32" r="4"/>',
+  method:'<path d="M10 50 26 30l10 10 18-24"/><path d="M42 16h12v12"/>',
+  org:'<rect x="8" y="12" width="48" height="42" rx="5"/><path d="M8 24h48M20 6v12M44 6v12M18 34h8M30 34h8M42 34h4M18 44h8M30 44h8"/>',
+  clock:'<circle cx="32" cy="32" r="24"/><path d="M32 18v14l10 6"/>',
+  globe:'<circle cx="32" cy="32" r="24"/><path d="M8 32h48M32 8c8 8 8 40 0 48M32 8c-8 8-8 40 0 48"/>',
+  vr:'<path d="M8 22h48v22H40l-4-6h-8l-4 6H8z"/><circle cx="20" cy="32" r="4"/><circle cx="44" cy="32" r="4"/>',
+  chart:'<path d="M10 54V10M10 54h44"/><rect x="18" y="34" width="8" height="14"/><rect x="32" y="24" width="8" height="24"/><rect x="46" y="14" width="8" height="34"/>',
+  nowifi:'<path d="M8 24a34 34 0 0 1 48 0M16 32a22 22 0 0 1 32 0M24 40a10 10 0 0 1 16 0"/><circle cx="32" cy="50" r="2.5"/><path d="M10 8l44 48"/>',
+  user:'<circle cx="26" cy="20" r="10"/><path d="M8 54c0-11 8-18 18-18s18 7 18 18"/><path d="M46 18a7 7 0 1 1 7 7v5M53 38v1"/>'
+};
+const ic = (k,cls='ico') => `<svg class="${cls}" viewBox="0 0 64 64">${ICON[k]}</svg>`;
+
+// people pictogram for formats
+const person = (x,y,c,s=1) => `<g transform="translate(${x},${y}) scale(${s})"><circle cx="0" cy="-26" r="11" fill="${c}"/><path d="M-18 8c0-14 8-22 18-22s18 8 18 22z" fill="${c}"/></g>`;
+const laptop = (x,y,s=1) => `<g transform="translate(${x},${y}) scale(${s})" fill="none" stroke="#67e8f9" stroke-width="3"><rect x="-26" y="-34" width="52" height="34" rx="4"/><path d="M-34 6h68"/></g>`;
+const board = (x,y) => `<g transform="translate(${x},${y})"><rect x="-60" y="-50" width="120" height="70" rx="6" fill="none" stroke="#c4b5fd" stroke-width="3"/><path d="M-40 -28h50M-40 -12h80" stroke="#c4b5fd" stroke-width="3"/></g>`;
+
+const SCENES = [
+ { id:'intro', chip:'Практикум · мини-лекция', title:'', bubble:'', pose:'none',
+   subs:['Здравствуйте! Тема нашей мини-лекции — цифровизация и цифровые технологии в образовании.',
+         'Разберёмся, что стоит за этим понятием, что оно даёт и какие формы обучения с ним связаны.'],
+   html:`
+   <div class="abs" style="left:100px;top:150px;width:1000px">
+     <div class="chip" data-sub="0" data-d="0" data-fx="left"><i></i>Учебный практикум · мини-лекция</div>
+     <div class="h1" style="font-size:92px;margin-top:40px" data-sub="0" data-d="0.15" data-fx="up">Цифровизация<br>и <em>цифровые технологии</em><br>в образовании</div>
+     
+   </div>
+   <div class="win" style="left:1140px;top:150px;width:690px;height:622px" data-sub="0" data-d="0.3" data-fx="win">
+     <div class="bar"><b style="background:#f472b6"></b><b style="background:#facc15"></b><b style="background:#4ade80"></b><span>DIGITAL_EDU.EXE</span></div>
+     <img src="../../assets/hero/holo_win.jpg" style="left:-40px;width:770px;top:46px">
+   </div>`},
+ { id:'s1', chip:'01 · Понятие', title:'Что такое <em>цифровизация</em> образования?', bubble:'Цифровизация — это ведь и есть дистант?', pose:'front',
+   subs:['Цифровизацию образования нередко отождествляют с дистанционным онлайн-обучением. Между тем это понятие гораздо шире.',
+         'Цифровизация — это использование программ, приложений и цифровых ресурсов как удалённо, так и непосредственно в аудитории.',
+         'Она затрагивает не только учебные, но и организационные процессы: электронный журнал, расписание, переписку с педагогом.'],
+   html:`
+   <svg class="abs" style="left:100px;top:290px" width="540" height="540" viewBox="0 0 540 540">
+     <g data-sub="0" data-d="0.2" data-fx="scale" style="transform-origin:270px 270px">
+       <circle cx="270" cy="270" r="250" fill="rgba(139,92,246,.16)" stroke="#a78bfa" stroke-width="3"/>
+       <text x="270" y="118" text-anchor="middle" font-size="34" font-weight="800" fill="#f5f3ff">Цифровизация</text>
+       <text x="270" y="158" text-anchor="middle" font-size="34" font-weight="800" fill="#f5f3ff">образования</text>
+     </g>
+     <g data-sub="0" data-d="1.2" data-fx="scale" style="transform-origin:270px 330px">
+       <circle cx="270" cy="330" r="128" fill="rgba(94,234,212,.14)" stroke="#5eead4" stroke-width="3" stroke-dasharray="8 8"/>
+       <text x="270" y="322" text-anchor="middle" font-size="26" font-weight="700" fill="#5eead4">дистанционное</text>
+       <text x="270" y="356" text-anchor="middle" font-size="26" font-weight="700" fill="#5eead4">обучение</text>
+     </g>
+   </svg>
+   <div class="card" style="left:700px;top:330px;width:580px" data-sub="1" data-d="0.3" data-fx="left">
+     <span class="num">УЧЕБНЫЕ ПРОЦЕССЫ</span>
+     <p>задания на компьютере и планшете в классе, онлайн-курсы, цифровые ресурсы</p></div>
+   <div class="card" style="left:700px;top:560px;width:580px" data-sub="2" data-d="0.3" data-fx="left">
+     <span class="num">ОРГАНИЗАЦИОННЫЕ ПРОЦЕССЫ</span>
+     <p>электронный журнал и дневник, расписание, сообщения педагогу</p></div>`},
+ { id:'s2', chip:'02 · История', title:'Три волны <em>цифровизации</em>', bubble:'С чего всё начиналось?', pose:'side',
+   subs:['Специалисты выделяют три волны цифровизации образования.',
+         'Первая волна — середина 1980-х и начало 1990-х годов: компьютерная грамотность и первые компьютерные классы.',
+         'Вторая — с середины 2000-х: информационно-коммуникационные технологии приходят на все учебные предметы.',
+         'Третья — примерно с 2018 года: цифровая трансформация, то есть цифровые технологии во всех процессах образования.'],
+   html:`
+   <div class="abs" style="left:100px;top:470px;width:1180px;height:6px;border-radius:3px;background:rgba(196,181,253,.18)"></div>
+   <div class="abs" style="left:100px;top:470px;width:1180px;height:6px;border-radius:3px;background:linear-gradient(90deg,#8b5cf6,#5eead4);transform-origin:0 0" data-sub="1" data-d="0" data-fx="grow" data-dur="9"></div>
+   ${[['1980–1990-е','I волна','Компьютерная грамотность, первые компьютерные классы',1],
+      ['с 2000-х','II волна','ИКТ на всех учебных предметах, а не только на информатике',2],
+      ['с 2018 г.','III волна','Цифровая трансформация всех процессов образования',3]].map((w,i)=>`
+     <div class="abs" style="left:${100+i*400}px;top:360px;width:370px" data-sub="${w[3]}" data-d="0.2" data-fx="up">
+       <div style="font-family:'DejaVu Sans Mono';font-size:24px;color:var(--cyan);letter-spacing:2px">${w[0]}</div>
+       <div style="font-family:'Inter Display';font-weight:800;font-size:44px;margin-top:6px">${w[1]}</div>
+     </div>
+     <div class="abs" style="left:${100+i*400-2}px;top:458px;width:30px;height:30px;border-radius:8px;background:#5eead4;box-shadow:0 0 22px #5eead4" data-sub="${w[3]}" data-d="0" data-fx="pop"></div>
+     <div class="card" style="left:${100+i*400}px;top:530px;width:370px;padding:24px 26px" data-sub="${w[3]}" data-d="0.4" data-fx="up"><p style="color:#e9e5ff">${w[2]}</p></div>`).join('')}`},
+ { id:'s3', chip:'03 · Трансформация', title:'Что <em>обновляется</em> в образовании?', bubble:'Что именно меняется?', pose:'front',
+   subs:['В ходе цифровой трансформации обновляются планируемые образовательные результаты и само содержание образования.',
+         'Меняются педагогические методы и технологии обучения — складывается цифровая дидактика.',
+         'Перестраиваются организация учебной работы, её технические средства и управление этим процессом.'],
+   html:[['target','Результаты и содержание','цифровые компетенции нужны выпускнику в жизни и профессии'],
+         ['method','Методы и технологии','занятие в цифровой среде отличается от традиционного: цифровая дидактика'],
+         ['org','Организация и управление','инструменты, технические средства, управление учебной работой']]
+     .map((c,i)=>`<div class="card" style="left:${100+i*400}px;top:330px;width:370px;height:440px" data-sub="${i}" data-d="0.2" data-fx="up">
+        ${ic(c[0])}<span class="num">0${i+1}</span><h3>${c[1]}</h3><p>${c[2]}</p></div>`).join('')},
+ { id:'s4', chip:'04 · Причины', title:'Почему без цифры <em>уже нельзя</em>?', bubble:'А почему это неизбежно?', pose:'side',
+   subs:['Как книгопечатание в XV веке изменило способы передачи знаний, так сегодня образование меняют цифровые технологии.',
+         'Каждая промышленная революция — паровой двигатель, электричество, компьютеры, искусственный интеллект — отражалась на школе и вузе.',
+         'Выпускник должен быть готов к жизни в цифровом мире. Ведь дети уже приходят в детский сад и школу знакомыми с гаджетами.'],
+   html:`
+   <div class="card" style="left:100px;top:300px;width:1180px;height:120px;display:flex;align-items:center;gap:26px;padding:20px 34px" data-sub="0" data-d="0.2" data-fx="up">
+     ${ic('book')}<div style="font-size:30px;font-weight:600">XV век — книгопечатание</div>
+     <div style="font-size:40px;color:var(--cyan)">→</div>
+     ${ic('pc')}<div style="font-size:30px;font-weight:600">XXI век — цифровые технологии</div></div>
+   ${[['gear','I','паровой двигатель','конец XVIII в.'],['bolt','II','электричество','конец XIX – начало XX в.'],['pc','III','компьютеры','вторая половина XX в.'],['ai','IV','интернет и ИИ','наши дни']]
+     .map((r,i)=>`<div class="card" style="left:${100+i*300}px;top:460px;width:280px;height:300px;padding:26px" data-sub="1" data-d="${0.2+i*0.9}" data-fx="up">
+       ${ic(r[0])}<span class="num">${r[1]} РЕВОЛЮЦИЯ</span><h3 style="font-size:30px">${r[2]}</h3><p style="font-size:22px">${r[3]}</p></div>`).join('')}`},
+ { id:'s5', chip:'05 · Возможности', title:'Что дают <em>цифровые технологии</em>?', bubble:'Что это даёт учащимся и педагогу?', pose:'front',
+   subs:['Эффективность цифровых технологий в образовании подтверждена по нескольким направлениям.',
+         'Они упрощают организационные задачи и делают обучение удобнее: можно не пропустить занятие, даже находясь дома.',
+         'Онлайн открывает доступ к курсам ведущих университетов, а виртуальная среда позволяет безопасно отрабатывать реальные навыки.',
+         'Наконец, учебная аналитика помогает педагогу увидеть трудности и успехи каждого учащегося.'],
+   html:[['org','Организация','электронные журналы, индивидуальное расписание',1,0],
+         ['clock','Удобство','гибкость: учиться можно и из дома',1,1],
+         ['globe','Контент','курсы ведущих университетов мира',2,0],
+         ['vr','Тренажёры','отработка навыков в безопасной виртуальной среде',2,1],
+         ['chart','Аналитика','данные о трудностях и успехах учащихся',3,0]]
+     .map((c,i)=>{const x=100+(i%3)*400, y= i<3?310:575; return `<div class="card" style="left:${x}px;top:${y}px;width:370px;height:240px;padding:24px 28px" data-sub="${c[3]}" data-d="${0.3+c[4]*1.2}" data-fx="up">
+        <div style="display:flex;gap:18px;align-items:center">${ic(c[0])}<h3 style="margin:0 0 14px">${c[1]}</h3></div><p>${c[2]}</p></div>`}).join('')},
+ { id:'s6', chip:'06 · Проблемы', title:'Где <em>подводные камни</em>?', bubble:'А что мешает цифровизации?', pose:'side',
+   subs:['Обратим внимание и на обратную сторону. Первый цифровой разрыв — нехватка техники и качественного интернета.',
+         'Второй разрыв — недостаток опыта работы с цифровыми ресурсами, причём не только у учащихся, но и у педагогов.',
+         'Нередко под видом трансформации происходит лишь оцифровка: обычная лекция просто переносится в видеосвязь.',
+         'Учреждения образования находятся на разных этапах цифровой зрелости: оцифровка, автоматизация, трансформация.'],
+   html:`
+   <div class="card" style="left:100px;top:300px;width:570px;height:200px" data-sub="0" data-d="0.4" data-fx="up">
+     <div style="display:flex;gap:20px">${ic('nowifi')}<div><span class="num">РАЗРЫВ 1</span><p style="color:#e9e5ff">нет техники и качественного интернета</p></div></div></div>
+   <div class="card" style="left:710px;top:300px;width:570px;height:200px" data-sub="1" data-d="0.3" data-fx="up">
+     <div style="display:flex;gap:20px">${ic('user')}<div><span class="num">РАЗРЫВ 2</span><p style="color:#e9e5ff">нет опыта работы с цифровыми ресурсами</p></div></div></div>
+   <div class="abs" style="left:100px;top:540px;font-size:26px;color:var(--pink);font-weight:600" data-sub="2" data-d="0.2" data-fx="left">⚠ оцифровка ≠ трансформация</div>
+   ${[['Оцифровка','бумага → PDF',90],['Автоматизация','цифровые системы',160],['Трансформация','новое содержание и методы',230]]
+     .map((s,i)=>`<div class="abs" style="left:${100+i*400}px;top:${830-s[2]}px;width:370px;height:${s[2]}px;border-radius:18px 18px 0 0;
+        background:${i==2?'linear-gradient(180deg,rgba(94,234,212,.45),rgba(94,234,212,.08))':'linear-gradient(180deg,rgba(139,92,246,.45),rgba(139,92,246,.08))'};
+        border:1.5px solid ${i==2?'#5eead4':'#a78bfa'};border-bottom:none;padding:18px 22px;transform-origin:50% 100%" data-sub="3" data-d="${0.2+i*0.7}" data-fx="rise">
+        <div style="font-family:'Inter Display';font-weight:800;font-size:30px">${s[0]}</div><div style="font-size:22px;color:#ddd6fe;margin-top:4px">${s[1]}</div></div>`).join('')}`},
+ { id:'s7', chip:'07 · Формы обучения', title:'Дистанционное, смешанное, <em>гибридное</em>', bubble:'В чём разница между формами?', pose:'front',
+   subs:['Дистанционное обучение — взаимодействие преподавателя и студента на расстоянии; бо́льшую часть материала студент осваивает самостоятельно.',
+         'Смешанное обучение, или blended learning, сочетает аудиторные занятия с электронным обучением, например в модели «перевёрнутого класса».',
+         'Гибридное обучение предполагает, что часть группы находится в аудитории, а часть одновременно подключается к занятию дистанционно.'],
+   html:[['Дистанционное','на расстоянии, через онлайн-сервисы',
+          `${person(70,120,'#c4b5fd')}<path d="M110 100h120" stroke="#5eead4" stroke-width="3" stroke-dasharray="8 8"/>${laptop(280,112)}${person(280,70,'#5eead4',.7)}`],
+         ['Смешанное','очные занятия + электронное обучение',
+          `${board(110,90)}${person(110,165,'#c4b5fd',.7)}<text x="190" y="105" font-size="40" fill="#f5f3ff" font-weight="800">+</text>${laptop(280,112)}`],
+         ['Гибридное','часть группы в аудитории, часть онлайн — одновременно',
+          `${board(110,80)}${person(70,165,'#c4b5fd',.6)}${person(120,165,'#c4b5fd',.6)}<path d="M180 120h40" stroke="#5eead4" stroke-width="3" stroke-dasharray="6 6"/>${laptop(275,90,.8)}${laptop(275,160,.8)}`]]
+     .map((c,i)=>`<div class="card" style="left:${100+i*400}px;top:310px;width:370px;height:470px" data-sub="${i}" data-d="0.2" data-fx="up">
+        <svg width="320" height="200" viewBox="0 0 340 200">${c[2]}</svg>
+        <span class="num" style="margin-top:14px">0${i+1}</span><h3>${c[0]}</h3><p>${c[1]}</p></div>`).join('')},
+ { id:'s8', chip:'08 · Вывод', title:'Цифра — не замена <em>педагогу</em>', bubble:'Значит, цифра не заменит педагога?', pose:'front',
+   subs:['Следовательно, цифровизация — не замена живому взаимодействию с педагогом, а альтернатива и подспорье для него.',
+         'Наиболее эффективными оказываются форматы, в которых очное обучение сочетается с цифровыми инструментами.'],
+   html:`
+   <div class="abs" style="left:100px;top:330px;display:flex;align-items:center;gap:30px">
+     <div class="card" style="position:relative;width:330px;height:200px;text-align:center;padding-top:44px" data-sub="0" data-d="0.3" data-fx="up"><h3>Живое<br>взаимодействие</h3></div>
+     <div style="font-size:70px;font-weight:800;color:var(--cyan)" data-sub="0" data-d="0.9" data-fx="pop">+</div>
+     <div class="card" style="position:relative;width:330px;height:200px;text-align:center;padding-top:44px" data-sub="0" data-d="1.3" data-fx="up"><h3>Цифровые<br>инструменты</h3></div>
+   </div>
+   <div class="abs" style="left:100px;top:600px;width:1180px;padding:30px 36px;border-radius:22px;background:linear-gradient(90deg,rgba(94,234,212,.22),rgba(139,92,246,.18));border:1.5px solid #5eead4" data-sub="1" data-d="0.3" data-fx="up">
+     <div style="font-family:'Inter Display';font-weight:800;font-size:44px">= наиболее эффективное обучение</div></div>`},
+ { id:'outro', chip:'Вопрос для обсуждения', title:'', bubble:'', pose:'none',
+   subs:['Вопрос для обсуждения на практикуме: зачем интернет и искусственный интеллект воспитателю дошкольного учреждения?',
+         'Подумайте над ним и приходите с аргументами. До встречи на практикуме!'],
+   html:`
+   <div class="abs" style="left:100px;top:150px;width:1000px">
+     <div class="chip" data-sub="0" data-d="0" data-fx="left"><i></i>Вопрос для обсуждения</div>
+     <div class="h1" style="font-size:80px;margin-top:40px" data-sub="0" data-d="0.2" data-fx="up">Зачем <em>интернет и ИИ</em><br>воспитателю<br>дошкольного учреждения?</div>
+     <div style="margin-top:44px" data-sub="1" data-d="0.2" data-fx="up"><span class="pill">приходите с аргументами</span><span class="pill" style="color:var(--pink);border-color:rgba(244,114,182,.5);background:rgba(244,114,182,.08)">до встречи на практикуме!</span></div>
+   </div>
+   <div class="win" style="left:1140px;top:150px;width:690px;height:622px" data-sub="0" data-d="0.3" data-fx="win">
+     <div class="bar"><b style="background:#f472b6"></b><b style="background:#facc15"></b><b style="background:#4ade80"></b><span>DISCUSSION.EXE</span></div>
+     <img src="../../assets/hero/holo_win.jpg" style="left:-40px;width:770px;top:46px">
+   </div>`}
+];
+
+// ---------------- timing ----------------
+const FPS = 25;
+const subDur = s => Math.max(3.6, s.length/15.5 + 1.0);
+let T = 0.4; const TL = [];
+const FIXED = [{"start": 0.4, "end": 12.6602, "subs": [[1.2000000000000002, 6.0248800000000005], [6.07488, 12.2602]]}, {"start": 12.6602, "end": 37.6197, "subs": [[13.9602, 21.7142], [21.764200000000002, 29.398799999999998], [29.4488, 37.2197]]}, {"start": 37.6197, "end": 68.20040000000002, "subs": [[38.9197, 42.7428], [42.7928, 52.05930000000001], [52.109300000000005, 59.21360000000001], [59.263600000000004, 67.80040000000001]]}, {"start": 68.20040000000002, "end": 88.54600000000003, "subs": [[69.50040000000001, 76.00730000000001], [76.05730000000001, 81.78600000000002], [81.83600000000001, 88.14600000000003]]}, {"start": 88.54600000000003, "end": 113.96900000000004, "subs": [[89.84600000000003, 97.57600000000004], [97.62600000000003, 105.79600000000003], [105.84600000000003, 113.56900000000003]]}, {"start": 113.96900000000004, "end": 142.45800000000003, "subs": [[115.26900000000003, 120.04800000000003], [120.09800000000003, 127.63700000000003], [127.68700000000003, 135.68600000000004], [135.73600000000005, 142.05800000000002]]}, {"start": 142.45800000000003, "end": 172.82600000000005, "subs": [[143.75800000000004, 150.81100000000004], [150.86100000000005, 157.87600000000003], [157.92600000000004, 164.75600000000003], [164.80600000000004, 172.42600000000004]]}, {"start": 172.82600000000005, "end": 199.60000000000008, "subs": [[174.12600000000006, 182.58800000000005], [182.63800000000006, 191.40400000000005], [191.45400000000006, 199.20000000000007]]}, {"start": 199.60000000000008, "end": 214.9450000000001, "subs": [[200.9000000000001, 208.07700000000008], [208.1270000000001, 214.5450000000001]]}, {"start": 214.9450000000001, "end": 228.34600000000012, "subs": [[216.24500000000012, 223.3810000000001], [223.43100000000013, 227.9460000000001]]}];
+SCENES.forEach((sc,si)=>{
+  if (FIXED){ const F=FIXED[si]; TL.push({sc,start:F.start,end:F.end,subs:F.subs.map((x,j)=>({text:sc.subs[j],t0:x[0],t1:x[1]}))}); T=F.end; return; }
+  const start = T; const lead = si===0 ? 0.6 : 1.2; let t = start + lead; const subs = [];
+  sc.subs.forEach(s=>{ const d = subDur(s); subs.push({text:s,t0:t,t1:t+d}); t += d; });
+  const end = t + 0.5;
+  TL.push({sc,start,end,subs}); T = end;
+});
+const DURATION = T + 1.6;
+window.__meta = {DURATION, FPS, TL: TL.map(x=>({id:x.sc.id,start:x.start,end:x.end,subs:x.subs}))};
+
+// ---------------- build DOM ----------------
+const scenesEl = document.getElementById('scenes');
+TL.forEach((S,i)=>{
+  const d = document.createElement('div'); d.className='scene'; d.id='sc_'+S.sc.id;
+  let head = '';
+  if (S.sc.title) head = `<div class="head"><div class="chip" data-hd="0"><i></i>${S.sc.chip}</div><div class="h1" data-hd="1">${S.sc.title}</div></div>`;
+  d.innerHTML = head + S.sc.html; scenesEl.appendChild(d);
+  S.el = d;
+  S.items = [...d.querySelectorAll('[data-sub],[data-hd]')].map(e=>{
+    let a;
+    if (e.dataset.hd!==undefined) a = S.start + 0.6 + (+e.dataset.hd)*0.2;
+    else a = S.subs[+e.dataset.sub].t0 + (+e.dataset.d||0) - 0.35;
+    return {e, a, fx: e.dataset.fx || (e.dataset.hd!==undefined ? (e.dataset.hd==='0'?'left':'up') : 'up'), dur:+(e.dataset.dur||0)};
+  });
+});
+// progress ticks
+const prog = document.getElementById('prog');
+TL.forEach((S,i)=>{ if(i===0) return; const k=document.createElement('div'); k.className='tick'; k.style.left=(S.start/DURATION*100)+'%'; prog.appendChild(k); S.tick=k; });
+
+// ---------------- easing ----------------
+const cl = (x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const eo = x=>1-Math.pow(1-x,3);
+const eb = x=>{const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2)};
+const eio = x=> x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+
+function applyFx(it,t){
+  const {e,a,fx} = it; const D = fx==='grow' ? (it.dur||2) : 0.75;
+  const p = cl((t-a)/D);
+  let o=1, tr='';
+  if (fx==='up'){ const q=eo(p); o=q; tr=`translateY(${(1-q)*40}px)`; }
+  else if (fx==='left'){ const q=eo(p); o=q; tr=`translateX(${(1-q)*-50}px)`; }
+  else if (fx==='scale'){ const q=eb(p); o=cl(p*2); tr=`scale(${0.6+0.4*q})`; }
+  else if (fx==='pop'){ const q=eb(p); o=cl(p*3); tr=`scale(${q})`; }
+  else if (fx==='grow'){ const q=eio(p); o=1; tr=`scaleX(${q})`; }
+  else if (fx==='rise'){ const q=eb(p); o=cl(p*3); tr=`scaleY(${Math.max(0,q)})`; }
+  else if (fx==='win'){ const q=eo(p); o=q; tr=`perspective(1400px) rotateY(${(1-q)*-28}deg) translateX(${(1-q)*120}px) scale(${0.9+0.1*q})`; }
+  e.style.opacity = o; e.style.transform = tr;
+}
+
+// hero elements
+const hF=document.getElementById('heroFront'), hS=document.getElementById('heroSide'), rA=document.getElementById('robA'), rB=document.getElementById('robB');
+const HERO = document.getElementById('hero');
+const bubble=document.getElementById('bubble'), btext=document.getElementById('btext'), bcur=document.getElementById('bcur');
+const subEl=document.getElementById('subtext'), subBox=document.getElementById('sub');
+const fill=document.getElementById('progfill');
+const g1=document.getElementById('g1'), g2=document.getElementById('g2'), dots=document.getElementById('dots');
+
+function poseAt(t){ // returns opacity of front/side/none blend
+  for (const S of TL){ if (t < S.end) return S; } return TL[TL.length-1];
+}
+
+window.render = function(t){
+  // background drift
+  g1.style.transform = `translate(${Math.sin(t*0.21)*60}px,${Math.cos(t*0.17)*40}px)`;
+  g2.style.transform = `translate(${Math.cos(t*0.13)*80}px,${Math.sin(t*0.19)*30}px)`;
+  dots.style.transform = `translate(${(t*6)%36}px,${(t*3)%36}px)`;
+  fill.style.transform = `scaleX(${cl(t/DURATION)})`;
+
+  TL.forEach((S,i)=>{
+    if (S.tick) S.tick.classList.toggle('on', t >= S.start);
+    const vis = t >= S.start-0.05 && (t < S.end + 0.7 || i===TL.length-1);
+    S.el.style.display = vis ? 'block' : 'none';
+    if (!vis) return;
+    const q = cl((t - S.end)/0.6);  // exit
+    const isLast = i===TL.length-1;
+    const ex = isLast ? 0 : eio(q);
+    S.el.style.opacity = 1-ex; S.el.style.transform = `translateY(${-30*ex}px)`;
+    S.items.forEach(it=>applyFx(it,t));
+  });
+
+  // current scene
+  let cur = TL.findIndex(S=> t < S.end); if (cur<0) cur = TL.length-1;
+  const S = TL[cur];
+  // subtitles
+  let sub = null; for (const s of S.subs){ if (t>=s.t0-0.15 && t< s.t1) sub=s; }
+  if (!sub){ // gap
+    subBox.style.opacity = 0;
+  } else {
+    subEl.textContent = sub.text;
+    const a = cl((t-sub.t0+0.15)/0.3), b = cl((sub.t1-t)/0.25);
+    subBox.style.opacity = Math.min(a,b);
+    subBox.style.transform = `translateY(${(1-eo(a))*12}px)`;
+  }
+
+  // hero pose weights with crossfade around scene boundaries
+  const w = {front:0, side:0, none:0};
+  const poseOf = k => TL[k].sc.pose;
+  const prev = cur>0 ? TL[cur-1] : null;
+  const k = prev ? cl((t - prev.end)/0.7) : 1;
+  w[poseOf(cur)] += eio(k); if (prev) w[poseOf(cur-1)] += 1-eio(k);
+  const heroVis = w.front + w.side;
+  const bob = Math.sin(t*1.6)*7;
+  const hop = prev ? Math.sin(Math.PI*cl((t-prev.end)/0.7))*-18 : 0;
+  const sc = 1.15;
+  hF.style.cssText = `left:60px;bottom:-40px;width:${414*sc}px;opacity:${w.front};transform:translateY(${bob+hop+(1-w.front)*30}px)`;
+  hS.style.cssText = `left:110px;bottom:-30px;width:${351*sc}px;opacity:${w.side};transform:translateY(${bob+hop+(1-w.side)*30}px)`;
+  const ra = 0.9*heroVis;
+  rA.style.cssText = `left:${410+Math.sin(t*0.7)*12}px;top:${600+Math.sin(t*1.1+1)*18}px;width:150px;opacity:${ra};transform:rotate(${Math.sin(t*0.9)*5}deg)`;
+  rB.style.cssText = `left:${-5+Math.cos(t*0.6)*10}px;top:${450+Math.sin(t*0.95)*20}px;width:92px;opacity:${ra};transform:rotate(${Math.cos(t*0.8)*6}deg)`;
+  HERO.style.opacity = 1;
+
+  // bubble typewriter
+  const bq = S.sc.bubble;
+  if (bq){
+    const t0 = S.start + 0.75; const n = Math.floor(cl((t-t0)/1.4)*bq.length);
+    const inA = cl((t-t0+0.05)/0.35), outA = 1-cl((t-S.end+0.1)/0.35);
+    const o = Math.min(inA,outA);
+    bubble.style.opacity = o; bubble.style.transform = `scale(${0.85+0.15*eb(inA)})`; bubble.style.transformOrigin='100% 100%';
+    btext.textContent = bq.slice(0,n);
+    bcur.style.opacity = (n<bq.length || Math.floor(t*2)%2===0) ? 1 : 0;
+  } else bubble.style.opacity = 0;
+};
+window.render(0);
+</script>
+</body>
+</html>
